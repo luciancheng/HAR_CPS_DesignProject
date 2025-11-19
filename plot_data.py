@@ -18,10 +18,10 @@ axis_files = {
 }
 
 COLORS = {
-    global_parameters.CLASS_A: "tab:red",
-    global_parameters.CLASS_B: "tab:green",
-    global_parameters.CLASS_C: "tab:blue",
-    global_parameters.CLASS_D: "tab:yellow",
+    global_parameters.CLASS_A: "red",
+    global_parameters.CLASS_B: "green",
+    global_parameters.CLASS_C: "blue",
+    global_parameters.CLASS_D: "yellow",
 }
 
 def load_and_compute_means():
@@ -38,6 +38,8 @@ def load_and_compute_means():
     # Load labels (assume only one column)
     labels_df = pd.read_csv(axis_files["labels"], header=None)
     labels = labels_df.iloc[:, 0]  # get first column
+    label_counts = labels.value_counts()
+    print(label_counts)
 
     # Load accelerometer data
     for axis, col_name in zip(["ax", "ay", "az"], ["Ax", "Ay", "Az"]):
