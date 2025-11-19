@@ -41,17 +41,17 @@ LABELS = {
 }
 
 mappings = {
-	"up": "standing",
-	"down": "sitting",
-	"left": "lying",
-	"right" : "Turn on spot (CW)"
+    "up": "standing",
+    "down": "sitting",
+    "left": "lying",
+    "right": "Turn on spot (CW)"
 }
 
 colour_mappings = {
-	"up": red,
-	"down": green,
-	"left": blue,
-	"right" : yellow
+    "up": red,
+    "down": green,
+    "left": blue,
+    "right": yellow
 }
 
 # Ensure files exist and have headers
@@ -123,57 +123,57 @@ try:
 
                 # Interpolate to fixed number of samples
                 interp = interpolate_window(
-					raw_times_np,
-					raw_values_np,
-					t_start=0,
-					t_end=window_size,
-					target_hz=sample_rate
+                    raw_times_np,
+                    raw_values_np,
+                    t_start=0,
+                    t_end=window_size,
+                    target_hz=sample_rate
                 )  # shape: (6, samples_per_window)
 
                 # Write each axis to its file
-				timestamp = datetime.now().isoformat()
-                
+                timestamp = datetime.now().isoformat()
+
                 # Label the data
-				print("Up - Standing, Down - Sitting, Left - Lying, Right - Turning on spot (CW)")
+                print("Up - Standing, Down - Sitting, Left - Lying, Right - Turning on spot (CW)")
 
-				label = None
-				pending_label = None
+                label = None
+                pending_label = None
 
-				while label is None:
-					for event in sense.stick.get_events():
+                while label is None:
+                    for event in sense.stick.get_events():
 
-						# Step 1: Pick direction (not middle)
-						if event.action == "pressed" and event.direction in LABELS and event.direction != "middle":
-							pending_label = LABELS[event.direction]
-							print(f"You selected: {event.direction} - {mappings[event.direction]} : {pending_label}")
-							sense.clear(colour_mappings[event.direction])
-							print("Press MIDDLE button to confirm.")
+                        # Step 1: Pick direction (not middle)
+                        if event.action == "pressed" and event.direction in LABELS and event.direction != "middle":
+                            pending_label = LABELS[event.direction]
+                            print(f"You selected: {event.direction} - {mappings[event.direction]} : {pending_label}")
+                            sense.clear(colour_mappings[event.direction])
+                            print("Press MIDDLE button to confirm.")
 
-						# Step 2: Confirm using middle button
-						if event.action == "pressed" and event.direction == "middle":
-							if pending_label is not None:
-								label = pending_label
-								print(f"Confirmed label: {label}")
-								break
-							else:
-								print("No selection to confirm. Choose a direction first.")
-                                
-                       
-                                
-				# save raw axis data
-				print(interp.shape)
-				for idx, axis in enumerate(["ax", "ay", "az", "gx", "gy", "gz"]):
-					path = axis_files[axis]
-					with open(path, "a", newline="") as f:
-						writer = csv.writer(f)
-						writer.writerow([timestamp] + interp[idx].tolist())
-                        
-				with open(axis_files[labels], "a", newline="") as f:
-					writer = csv.writer(f)
-					writer.writerow([timestamp] + [label])
-					
-				print("Saved window:", timestamp)
-				sense.clear()
+                        # Step 2: Confirm using middle button
+                        if event.action == "pressed" and event.direction == "middle":
+                            if pending_label is not None:
+                                label = pending_label
+                                print(f"Confirmed label: {label}")
+                                break
+                            else:
+                                print("No selection to confirm. Choose a direction first.")
+
+                # Save raw axis data
+                print(interp.shape)
+
+                for idx, axis in enumerate(["ax", "ay", "az", "gx", "gy", "gz"]):
+                    path = axis_files[axis]
+                    with open(path, "a", newline="") as f:
+                        writer = csv.writer(f)
+                        writer.writerow([timestamp] + interp[idx].tolist())
+
+                # Save label
+                with open(axis_files["labels"], "a", newline="") as f:
+                    writer = csv.writer(f)
+                    writer.writerow([timestamp, label])
+
+                print("Saved window:", timestamp)
+                sense.clear()
 
         time.sleep(sleep_time)
 
