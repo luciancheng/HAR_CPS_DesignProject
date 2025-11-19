@@ -41,7 +41,7 @@ try:
         if now >= window_start + window_size:
             # collect mean data of window and get prediction
             inference_data = np.array(raw_values).mean(axis=0)
-            scaler.fit_transform(inference_data)
+            inference_data_scaled = scaler.transform(inference_data.reshape(1, -1))
             predicted_label = svm_classifier_loaded.predict([inference_data])[0]
 
             # display predicted label to sense hat colour
