@@ -55,16 +55,6 @@ colour_mappings = {
     "right": yellow
 }
 
-# Ensure files exist and have headers
-"""
-for axis, path in axis_files.items():
-    if not os.path.exists(path):
-        with open(path, "w", newline="") as f:
-            writer = csv.writer(f)
-            header = ["timestamp"]
-            header += [f"{axis}_{i}" for i in range(samples_per_window)]
-            writer.writerow(header)"""
-
 # Interpolation helper
 def interpolate_window(times, values, t_start, t_end, target_hz):
     n = int((t_end - t_start) * target_hz)
