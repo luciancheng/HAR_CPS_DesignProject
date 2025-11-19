@@ -4,21 +4,27 @@ import time
 import numpy as np
 import pickle
 from sklearn.preprocessing import StandardScaler
+import pandas as pd
 
 # Initialize SenseHat
 sense = SenseHat()
 sense.clear()
 
+scaler = StandardScaler()
+
 # load model
 with open("svm_model.pkl", "rb") as f:
     svm_classifier_loaded = pickle.load(f)
+
+# load train data then transform for scaling
+X_train = pd.read_csv("X_train.csv")
+scaler.fit_transform(X_train)
 
 class_to_colour = global_parameters.CLASS_TO_COLOUR
 sample_rate = global_parameters.SAMPLE_RATE   # e.g., 25 Hz
 window_size = global_parameters.WINDOW_SIZE   # e.g., 2 seconds
 samples_per_window = int(sample_rate * window_size)  # expected = 50
 
-scaler = StandardScaler()
 sleep_time = 1 / sample_rate
 raw_values = []
 
@@ -43,6 +49,7 @@ try:
             inference_data = np.array(raw_values).mean(axis=0)
             inference_data_scaled = scaler.transform(inference_data.reshape(1, -1))
             predicted_label = svm_classifier_loaded.predict([inference_data])[0]
+
 
             # display predicted label to sense hat colour
             sense.clear(class_to_colour[predicted_label])
