@@ -1,15 +1,16 @@
 # HAR parameters
-SAMPLE_RATE=50 # Hz
+SAMPLE_RATE=25 # Hz
 WINDOW_SIZE=2 # seconds
-WINDOW_OVERLAP=1 # seconds
+WINDOW_OVERLAP=0 # seconds
 
 # Classes
-CLASS_A = +1
-CLASS_B = -1
-CLASS_C = +2
-CLASS_D = -2
+CLASS_A = 0 # standing
+CLASS_B = 1 # sitting
+CLASS_C = 2 # laying
+CLASS_D = 3 # spinning CW
 
 # Colours
 RED = [255, 0, 0]
 GREEN = [0, 255, 0]
 BLUE = [0, 0, 255]
+YELLOW = [255, 255, 0]
