@@ -15,3 +15,10 @@ GREEN = [0, 255, 0]
 BLUE = [0, 0, 255]
 YELLOW = [255, 255, 0]
 PURPLE = [255, 0, 255]
+
+CLASS_TO_COLOUR = {
+    CLASS_A: RED,
+    CLASS_B: GREEN,
+    CLASS_C: BLUE,
+    CLASS_D: YELLOW
+}
