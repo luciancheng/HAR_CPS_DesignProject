@@ -19,6 +19,7 @@ green = global_parameters.GREEN
 red = global_parameters.RED
 blue = global_parameters.BLUE
 yellow = global_parameters.YELLOW
+purple = global_parameters.PURPLE
 
 os.makedirs("raw_data", exist_ok=True)
 
@@ -55,13 +56,14 @@ colour_mappings = {
 }
 
 # Ensure files exist and have headers
+"""
 for axis, path in axis_files.items():
     if not os.path.exists(path):
         with open(path, "w", newline="") as f:
             writer = csv.writer(f)
             header = ["timestamp"]
             header += [f"{axis}_{i}" for i in range(samples_per_window)]
-            writer.writerow(header)
+            writer.writerow(header)"""
 
 # Interpolation helper
 def interpolate_window(times, values, t_start, t_end, target_hz):
@@ -101,9 +103,9 @@ try:
 
         # Check for start trigger
         for e in sense.stick.get_events():
-            if e.direction == "middle" and e.action == "pressed":
+            if e.direction == "middle" and e.action == "pressed" and not is_active:
                 is_active = True
-                sense.clear(green)
+                sense.clear(purple)
                 start_time = now
                 raw_times = []
                 raw_values = []
@@ -145,9 +147,9 @@ try:
                         # Step 1: Pick direction (not middle)
                         if event.action == "pressed" and event.direction in LABELS and event.direction != "middle":
                             pending_label = LABELS[event.direction]
-                            print(f"You selected: {event.direction} - {mappings[event.direction]} : {pending_label}")
+                            print(f"You selected: {event.direction} - {mappings[event.direction]} : {pending_label}\n")
                             sense.clear(colour_mappings[event.direction])
-                            print("Press MIDDLE button to confirm.")
+                            print("Press MIDDLE button to confirm.\n")
 
                         # Step 2: Confirm using middle button
                         if event.action == "pressed" and event.direction == "middle":
@@ -159,18 +161,17 @@ try:
                                 print("No selection to confirm. Choose a direction first.")
 
                 # Save raw axis data
-                print(interp.shape)
 
                 for idx, axis in enumerate(["ax", "ay", "az", "gx", "gy", "gz"]):
                     path = axis_files[axis]
                     with open(path, "a", newline="") as f:
                         writer = csv.writer(f)
-                        writer.writerow([timestamp] + interp[idx].tolist())
+                        writer.writerow(interp[idx].tolist())
 
                 # Save label
                 with open(axis_files["labels"], "a", newline="") as f:
                     writer = csv.writer(f)
-                    writer.writerow([timestamp, label])
+                    writer.writerow([label])
 
                 print("Saved window:", timestamp)
                 sense.clear()
