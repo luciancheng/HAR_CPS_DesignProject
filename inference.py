@@ -28,7 +28,7 @@ try:
         """
         No window overlap necessary since each motion is static and very distinct
         """
-        now = time.perf()
+        now = time.perf_counter()
 
         # Read sensors
         acc = sense.get_accelerometer_raw()
@@ -40,9 +40,9 @@ try:
         # completed a round of window data collection
         if now >= window_start + window_size:
             # collect mean data of window and get prediction
-            inference_data = np.array(raw_values).mean(axis=1)
+            inference_data = np.array(raw_values).mean(axis=0)
             scaler.fit_transform(inference_data)
-            predicted_label = svm_classifier_loaded(inference_data)
+            predicted_label = svm_classifier_loaded.predict([inference_data])[0]
 
             # display predicted label to sense hat colour
             sense.clear(class_to_colour[predicted_label])
