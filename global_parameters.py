@@ -17,8 +17,9 @@ YELLOW = [255, 255, 0]
 PURPLE = [255, 0, 255]
 
 CLASS_TO_COLOUR = {
-    CLASS_A: RED,
-    CLASS_B: GREEN,
-    CLASS_C: BLUE,
-    CLASS_D: YELLOW
+    CLASS_A: RED, # standing
+    CLASS_B: GREEN, # sitting
+    CLASS_C: BLUE, # laying
+    CLASS_D: YELLOW # spinning CW
+
 }
